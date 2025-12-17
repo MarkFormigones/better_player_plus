@@ -31,6 +31,7 @@ class VideoPlayerValue {
     this.isBuffering = false,
     this.volume = 1.0,
     this.speed = 1.0,
+    this.errorCode,
     this.errorDescription,
     this.isPip = false,
   });
@@ -72,6 +73,11 @@ class VideoPlayerValue {
 
   /// The current speed of the playback
   final double speed;
+
+  /// A code of the error if present.
+  ///
+  /// If [hasError] is false this is [null].
+  final String? errorCode;
 
   /// A description of the error if present.
   ///
@@ -118,6 +124,7 @@ class VideoPlayerValue {
     bool? isLooping,
     bool? isBuffering,
     double? volume,
+    String? errorCode,
     String? errorDescription,
     double? speed,
     bool? isPip,
@@ -132,6 +139,7 @@ class VideoPlayerValue {
     isBuffering: isBuffering ?? this.isBuffering,
     volume: volume ?? this.volume,
     speed: speed ?? this.speed,
+    errorCode: errorCode ?? this.errorCode,
     errorDescription: errorDescription ?? this.errorDescription,
     isPip: isPip ?? this.isPip,
   );
@@ -148,6 +156,7 @@ class VideoPlayerValue {
       'isLooping: $isLooping, '
       'isBuffering: $isBuffering, '
       'volume: $volume, '
+      'errorCode: $errorCode, '
       'errorDescription: $errorDescription)';
 }
 
@@ -239,7 +248,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     void errorListener(Object object) {
       if (object is PlatformException) {
         final PlatformException e = object;
-        value = value.copyWith(errorDescription: e.message);
+        value = value.copyWith(errorDescription: e.message, errorCode: e.code);
       } else {
         value.copyWith(errorDescription: object.toString());
       }
