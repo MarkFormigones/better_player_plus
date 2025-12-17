@@ -495,7 +495,57 @@ internal class BetterPlayer(
             }
 
             override fun onPlayerError(error: PlaybackException) {
-                eventSink.error("VideoError", "Video player had error $error", "")
+                val cause = error.cause
+                val errorCode: Int
+                val errorMessage: String
+
+                when {
+                    // --- HTTP STATUS ERRORS (403, 404, etc.) ---
+                    cause is HttpDataSource.InvalidResponseCodeException -> {
+                        errorCode = cause.responseCode
+                        errorMessage = when (cause.responseCode) {
+                            403 -> "Access denied (403)."
+                            404 -> "Content not found (404)."
+                            else -> "HTTP error ${cause.responseCode}."
+                        }
+                    }
+
+                    // --- NETWORK ERRORS ---
+                    error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED -> {
+                        errorCode = error.errorCode
+                        errorMessage = "Network connection failed."
+                    }
+
+                    error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT -> {
+                        errorCode = error.errorCode
+                        errorMessage = "Network connection timeout."
+                    }
+
+                    // --- DECODER ERRORS ---
+                    error.errorCode == PlaybackException.ERROR_CODE_DECODER_INIT_FAILED -> {
+                        errorCode = error.errorCode
+                        errorMessage = "Decoder initialization failed."
+                    }
+
+                    error.errorCode == PlaybackException.ERROR_CODE_DECODING_FAILED -> {
+                        errorCode = error.errorCode
+                        errorMessage = "Decoding failed."
+                    }
+
+                    // --- LIVE STREAM ---
+                    error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW -> {
+                        errorCode = error.errorCode
+                        errorMessage = "Behind live window."
+                    }
+
+                    // --- UNKNOWN / OTHER ---
+                    else -> {
+                        errorCode = error.errorCode
+                        errorMessage = "Unknown error: ${error.errorCodeName}"
+                    }
+                }
+
+                eventSink.error(errorCode.toString(), errorMessage, error)
             }
         })
         val reply: MutableMap<String, Any> = HashMap()
