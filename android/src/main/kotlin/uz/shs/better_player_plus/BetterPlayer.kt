@@ -97,7 +97,7 @@ internal class BetterPlayer(
     private var refreshHandler: Handler? = null
     private var refreshRunnable: Runnable? = null
     private var exoPlayerEventListener: Player.Listener? = null
-    private var textTrackEnabled = true
+    private var textTrackEnabled = false
     private var bitmap: Bitmap? = null
     private var mediaSession: MediaSessionCompat? = null
     private var drmSessionManager: DrmSessionManager? = null
@@ -116,10 +116,6 @@ internal class BetterPlayer(
             this.customDefaultLoadControl.bufferForPlaybackAfterRebufferMs
         )
         loadControl = loadBuilder.build()
-        // Pre confg track selector to allow text tracks with undetermined language
-        val initialParams = trackSelector.buildUponParameters()
-        initialParams.setSelectUndeterminedTextLanguage(true)
-        trackSelector.setParameters(initialParams)
 
         exoPlayer = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
