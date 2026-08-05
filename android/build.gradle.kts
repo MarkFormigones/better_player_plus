@@ -4,11 +4,11 @@ plugins {
 }
 
 group = "uz.shs.better_player_plus"
-version = "1.0-SNAPSHOT"
+version = "1.3.4"
 
 val lifecycleVersion = "2.9.4"
 val annotationVersion = "1.9.1"
-val media3Version = "1.8.0"
+val media3Version = "1.10.1"
 val workVersion = "2.10.5"
 
 buildscript {
@@ -18,7 +18,6 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.13.0")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20")
     }
 }
 

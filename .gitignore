@@ -6,6 +6,10 @@
 .DS_Store
 .atom/
 .buildlog/
+
+# Swift Package Manager
+.build/
+.swiftpm/
 .history
 .svn/
 
@@ -76,6 +80,7 @@ build/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 /example/ios/Podfile.lock
 pubspec.lock
+/example/ios/Pods.disabled/
 
 # FVM Version Cache
 .fvm/

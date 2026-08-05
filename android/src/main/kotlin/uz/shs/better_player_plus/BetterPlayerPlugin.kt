@@ -96,6 +96,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         }
         videoPlayers.clear()
         dataSources.clear()
+        stopForegroundService()
     }
 
     @UnstableApi
@@ -246,6 +247,11 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 if (mixWitOthers != null) {
                     player.setMixWithOthers(mixWitOthers)
                 }
+                result.success(null)
+            }
+
+            SET_ASPECT_RATIO_METHOD -> {
+                result.success(null)
             }
 
             ENABLE_TEXT_TRACK_METHOD -> {
@@ -494,6 +500,9 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         videoPlayers.remove(textureId)
         dataSources.remove(textureId)
         stopPipHandler()
+        if (videoPlayers.size == 0) {
+            stopForegroundService()
+        }
     }
 
     private fun stopPipHandler() {
@@ -502,6 +511,12 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             pipHandler = null
         }
         pipRunnable = null
+    }
+
+    private fun stopForegroundService() {
+        flutterState?.applicationContext?.let { context ->
+            BetterPlayerForegroundService.stop(context)
+        }
     }
 
     private interface KeyForAssetFn {
@@ -592,6 +607,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         private const val DISABLE_PICTURE_IN_PICTURE_METHOD = "disablePictureInPicture"
         private const val IS_PICTURE_IN_PICTURE_SUPPORTED_METHOD = "isPictureInPictureSupported"
         private const val SET_MIX_WITH_OTHERS_METHOD = "setMixWithOthers"
+        private const val SET_ASPECT_RATIO_METHOD = "setAspectRatio"
         private const val CLEAR_CACHE_METHOD = "clearCache"
         private const val ENABLE_TEXT_TRACK_METHOD = "enableTextTrack"
         private const val DISABLE_TEXT_TRACK_METHOD = "disableTextTrack"

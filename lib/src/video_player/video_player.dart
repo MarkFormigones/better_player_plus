@@ -455,7 +455,9 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     if (!_created || _isDisposed) {
       return;
     }
-    await _videoPlayerPlatform.setAspectRatio(_textureId, value.aspectRatioIOS);
+    if (Platform.isIOS) {
+      await _videoPlayerPlatform.setAspectRatio(_textureId, value.aspectRatioIOS);
+    }
   }
 
   Future<void> _applyPlayPause() async {
@@ -471,7 +473,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
         }
         final Duration? newPosition = await position;
         final DateTime? newAbsolutePosition = await absolutePosition;
-        // ignore: invariant_booleans
         if (_isDisposed) {
           return;
         }
@@ -629,13 +630,12 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     _videoPlayerPlatform.disableTextTrack(_textureId);
   }
 
-  static Future<void> clearCache() async => _videoPlayerPlatform.clearCache();
+  static Future<void> clearCache() => _videoPlayerPlatform.clearCache();
 
-  static Future<void> preCache(DataSource dataSource, int preCacheSize) async =>
+  static Future<void> preCache(DataSource dataSource, int preCacheSize) =>
       _videoPlayerPlatform.preCache(dataSource, preCacheSize);
 
-  static Future<void> stopPreCache(String url, String? cacheKey) async =>
-      _videoPlayerPlatform.stopPreCache(url, cacheKey);
+  static Future<void> stopPreCache(String url, String? cacheKey) => _videoPlayerPlatform.stopPreCache(url, cacheKey);
 }
 
 /// Widget that displays the video controlled by [controller].

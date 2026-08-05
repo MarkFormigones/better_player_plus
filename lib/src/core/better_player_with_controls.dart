@@ -111,6 +111,7 @@ class _BetterPlayerWithControlsState extends State<BetterPlayerWithControls> {
     _initialized = true;
 
     final bool placeholderOnTop = betterPlayerController.betterPlayerConfiguration.placeholderOnTop;
+    // Container needed to provide constraints to the Stack inside
     // ignore: avoid_unnecessary_containers
     return Container(
       child: Stack(
@@ -202,6 +203,9 @@ class _BetterPlayerVideoFitWidgetState extends State<_BetterPlayerVideoFitWidget
 
   bool _started = false;
 
+  String? _lastAppliedGravity;
+  String? _pendingGravity;
+
   StreamSubscription<BetterPlayerControllerEvent>? _controllerEventSubscription;
 
   @override
@@ -258,6 +262,51 @@ class _BetterPlayerVideoFitWidgetState extends State<_BetterPlayerVideoFitWidget
           _started = false;
         });
       }
+      if (event == BetterPlayerControllerEvent.setFit) {
+        if (Platform.isIOS) {
+          _applyBoxFitOnIOS(widget.betterPlayerController.getFit());
+        }
+      }
+    });
+  }
+
+  /// Converts [BoxFit] to a native iOS AVLayerVideoGravity string and applies it.
+  String _gravityForBoxFit(BoxFit boxFit) {
+    switch (boxFit) {
+      case BoxFit.fill:
+        return 'stretch';
+      case BoxFit.cover:
+        return 'fill';
+      case BoxFit.contain:
+      case BoxFit.fitWidth:
+      case BoxFit.fitHeight:
+      case BoxFit.scaleDown:
+      case BoxFit.none:
+        return 'aspect';
+    }
+  }
+
+  void _applyBoxFitOnIOS(BoxFit boxFit) {
+    final String gravity = _gravityForBoxFit(boxFit);
+    if (_lastAppliedGravity != gravity) {
+      _lastAppliedGravity = gravity;
+      controller?.setAspectRatio(gravity);
+    }
+  }
+
+  void _scheduleBoxFitApplyOnIOS(BoxFit boxFit) {
+    final String gravity = _gravityForBoxFit(boxFit);
+    if (_lastAppliedGravity == gravity || _pendingGravity == gravity) {
+      return;
+    }
+    _pendingGravity = gravity;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !Platform.isIOS) {
+        _pendingGravity = null;
+        return;
+      }
+      _pendingGravity = null;
+      _applyBoxFitOnIOS(widget.boxFit);
     });
   }
 
@@ -265,8 +314,9 @@ class _BetterPlayerVideoFitWidgetState extends State<_BetterPlayerVideoFitWidget
   Widget build(BuildContext context) {
     if (_initialized && _started) {
       // iOS platform views (UiKitView) don't play well with Clip/Transform/FittedBox.
-      // Render the platform view directly to avoid black screen.
+      // Apply BoxFit as native video gravity on iOS instead.
       if (Platform.isIOS) {
+        _scheduleBoxFitApplyOnIOS(widget.boxFit);
         return SizedBox.expand(child: VideoPlayer(controller));
       }
       return Center(
