@@ -1,126 +1,142 @@
-# Better Player Plus
+# Better Player Plus Fork
 
-<h3 align="center" style="font-size: 35px;">Need anything Flutter related? Reach out
-on <a href="https://www.linkedin.com/in/sunnatillo-shavkatov-430789216/">LinkedIn</a>
-</h3>
+This repository is a **fork** of the original `better_player_plus` project.
 
-[![Pub](https://img.shields.io/pub/v/better_player_plus.svg)](https://pub.dev/packages/better_player_plus)
-[![License](https://img.shields.io/github/license/SunnatilloShavkatov/betterplayer.svg?style=flat)](https://github.com/SunnatilloShavkatov/betterplayer)
-[![Platform](https://img.shields.io/badge/platform-flutter-blue.svg)](https://flutter.dev)
+It contains custom modifications required by our application while keeping a clean copy of the upstream repository. This branch strategy makes it easier to receive future updates from the original project while maintaining our own changes.
 
-Advanced video player for Flutter, based on `video_player` and inspired by Chewie and Better Player.
-It solves many common use cases out of the box and is easy to integrate.
+## Branch Strategy
 
-<table>
-  <tr>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/1.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/2.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/3.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/4.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/5.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/6.png"></td>
-  </tr>
-  <tr>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/7.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/8.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/9.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/10.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/11.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/12.png"></td>
-  </tr>
-  <tr>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/13.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/14.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/15.png"></td>
-    <td><img width="250px" src="https://raw.githubusercontent.com/jhomlala/betterplayer/master/media/16.png"></td>
-  </tr>
-</table>
+This repository contains three long-lived branches:
 
-### Features
+| Branch | Purpose |
+|--------|---------|
+| `master` | Clean mirror of the upstream repository. |
+| `develop` | Development branch containing all custom changes. |
+| `release` | Stable production branch used for creating release tags. |
 
-- ✔️ Fixed common playback bugs
-- ✔️ Advanced configuration options
-- ✔️ Refactored, customizable player controls (Material & Cupertino)
-- ✔️ Playlists
-- ✔️ ListView/feeds autoplay support
-- ✔️ Subtitles: SRT, WebVTT (HTML tags), HLS subtitles, multiple tracks
-- ✔️ HTTP headers support
-- ✔️ BoxFit for video
-- ✔️ Playback speed control
-- ✔️ HLS (tracks, segmented subtitles, audio tracks)
-- ✔️ DASH (tracks, subtitles, audio tracks)
-- ✔️ Alternate resolutions
-- ✔️ Caching
-- ✔️ Notifications
-- ✔️ Picture-in-Picture
-- ✔️ DRM (token, Widevine, FairPlay via EZDRM)
+---
 
-### Installation
+## master
 
-Add the dependency in your `pubspec.yaml`:
+The `master` branch is a **clean copy of the upstream repository**.
 
-```yaml
-dependencies:
-  better_player_plus: ^1.3.2
+### Purpose
+
+- Keep an unmodified copy of the upstream project.
+- Synchronize the latest updates from the repository owner.
+- Serve as the base for merging upstream changes into `develop`.
+
+### Do
+
+- Sync with the upstream repository.
+- Keep this branch identical to the upstream `master`.
+
+### Don't
+
+- Add custom features.
+- Fix application-specific bugs.
+- Create release tags.
+
+---
+
+## develop
+
+The `develop` branch is the **main development branch**.
+
+It contains all custom modifications made for our application.
+
+### Purpose
+
+- Starting point for all development work.
+- Implement new features and bug fixes.
+- Merge updates from `master` after syncing with upstream.
+
+### Do
+
+- Create feature branches from `develop`.
+- Merge completed work back into `develop`.
+- Test all changes before preparing a release.
+
+### Don't
+
+- Create production release tags.
+
+---
+
+## release
+
+The `release` branch contains the **production-ready code**.
+
+This branch should always represent the latest stable version.
+
+### Purpose
+
+- Prepare production releases.
+- Create Git tags.
+- Publish GitHub Releases.
+
+### Do
+
+- Merge tested changes from `develop`.
+- Create version tags and use the following format:
+  ```
+  v<upstream-version>+hotfix.<number>
+  ```
+  #### Examples
+  ```
+  v1.1.5+hotfix.1
+  v1.1.5+hotfix.2
+  v1.1.5+hotfix.3
+  v1.1.6+hotfix.1
+  ```
+- Increment the `hotfix` number for each new release.
+- Reset the `hotfix` number to `1` when upgrading to a new upstream version.
+
+### Don't
+
+- Perform active development directly on this branch.
+
+---
+
+## Development Workflow
+
+```text
+                 Upstream Repository
+                        │
+                        ▼
+                    master
+                        │
+                Sync / Merge Updates
+                        │
+                        ▼
+                    develop
+                        │
+             Feature Development
+               Bug Fixes & Testing
+                        │
+                        ▼
+                    release
+                        │
+                 Create Git Tag
+                        │
+                        ▼
+                 GitHub Release
 ```
 
-Import the package:
+## Typical Workflow
 
-```dart
-import 'package:better_player_plus/better_player_plus.dart';
-```
+1. Sync `master` with the upstream repository.
+2. Merge the latest `master` into `develop`.
+3. Implement and test changes in `develop`.
+4. Merge tested changes into `release`.
+5. Create a Git tag from `release`.
+6. Publish a GitHub Release.
 
-### Quick start
+---
 
-Minimal example showing a network source:
+## Notes
 
-```dart
-
-final dataSource = BetterPlayerDataSource(
-  BetterPlayerDataSourceType.network,
-  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-);
-
-final controller = BetterPlayerController(
-  const BetterPlayerConfiguration(),
-  betterPlayerDataSource: dataSource,
-);
-
-// In your widget tree
-BetterPlayer
-(
-controller
-:
-controller
-);
-```
-
-### Documentation
-
-- Installation notes: [`doc/install.md`](doc/install.md)
-- Example application: [`example/`](example/)
-
-### Important information
-
-This package is actively evolving. Breaking changes may appear between versions. Contributions are
-welcome — please open issues or pull requests.
-
-### License
-
-Apache 2.0 — see [`LICENSE`](LICENSE).
-
-### Recent Updates (v1.2.0)
-
-- **SDK Update**: Dart SDK `>=3.11.0`, Flutter SDK `>=3.41.0`, Android Media3 `1.10.0`
-- **iOS Fixes**: Preserved playback speed across seek/pause/resume; fixed AVPlayer aspect ratio issues; added wakelock (disable auto-sleep) support
-- **Audio**: Fixed audio track override not being cleared before applying a new one; improved HLS default audio source selection
-- **Controls**: Fixed `controlsVisibilityStream` feedback loop and auto-hide emit behaviour
-- **Code Quality**: Zero `dart analyze` issues — all errors, warnings and info resolved
-
-### Credits
-
-This work builds on the great foundations of Chewie and the original Better Player. Thanks to all
-contributors of those projects.
-
-**Special Thanks**: This project benefited greatly from Cursor AI assistance during the iOS
-Objective-C to Swift migration process.
+- Never commit custom changes directly to `master`.
+- Always start development from `develop`.
+- Always create release tags from `release`.
+- Keeping `master` synchronized with the upstream repository makes future updates much easier.
